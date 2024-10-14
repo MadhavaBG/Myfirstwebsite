@@ -39,6 +39,31 @@
             font-size: 18px;
             line-height: 1.6;
         }
+        #splitButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #splitButton:hover {
+            background-color: #45a049;
+        }
+        #wordContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .word-box {
+            margin: 5px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -62,6 +87,8 @@
     </select>
     
     <div id="shlokaContent"></div>
+    <button id="splitButton" style="display: none;">Split the shloka</button>
+    <div id="wordContainer"></div>
 
     <script>
         const shlokaCount = {
@@ -102,6 +129,7 @@
                 fetchShloka(document.getElementById('chapterSelect').value, this.value);
             } else {
                 document.getElementById('shlokaContent').style.display = 'none';
+                document.getElementById('splitButton').style.display = 'none';
             }
         });
 
@@ -112,9 +140,11 @@
                     const shlokaText = data[chapter][`shloka${shloka}`];
                     if (shlokaText) {
                         displayShloka(shlokaText);
+                        document.getElementById('splitButton').style.display = 'block';
                     } else {
                         document.getElementById('shlokaContent').innerHTML = '<p>Shloka not found.</p>';
                         document.getElementById('shlokaContent').style.display = 'block';
+                        document.getElementById('splitButton').style.display = 'none';
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -125,6 +155,19 @@
             shlokaContent.innerHTML = shlokaText.replace(/\n/g, '<br>');
             shlokaContent.style.display = 'block';
         }
+
+        document.getElementById('splitButton').addEventListener('click', function() {
+            const shlokaText = document.getElementById('shlokaContent').innerText;
+            const words = shlokaText.split(/\s+/);
+            const wordContainer = document.getElementById('wordContainer');
+            wordContainer.innerHTML = '';
+            words.forEach(word => {
+                const wordBox = document.createElement('div');
+                wordBox.className = 'word-box';
+                wordBox.textContent = word;
+                wordContainer.appendChild(wordBox);
+            });
+        });
     </script>
 </body>
 </html>
