@@ -92,6 +92,9 @@
             border-radius: 3px;
             cursor: pointer;
         }
+        .edit-mode {
+            border: 2px solid #4CAF50;
+        }
     </style>
 </head>
 <body>
@@ -210,12 +213,18 @@
             deleteButton.className = 'action-button';
             deleteButton.addEventListener('click', () => deleteWordBox(wordBox));
 
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.className = 'action-button';
+            editButton.addEventListener('click', () => editWordBox(wordBox));
+
             const splitButton = document.createElement('button');
             splitButton.textContent = 'Split';
             splitButton.className = 'action-button';
             splitButton.addEventListener('click', () => splitWordBox(wordBox));
 
             actionButtons.appendChild(deleteButton);
+            actionButtons.appendChild(editButton);
             actionButtons.appendChild(splitButton);
             wordBox.appendChild(actionButtons);
 
@@ -245,6 +254,8 @@
                 actionButtons.style.display = 'block';
             } else {
                 actionButtons.style.display = 'none';
+                wordBox.classList.remove('edit-mode');
+                wordBox.querySelector('span').contentEditable = false;
             }
         }
 
@@ -252,13 +263,31 @@
             wordBox.remove();
         }
 
+        function editWordBox(wordBox) {
+            const wordSpan = wordBox.querySelector('span');
+            wordSpan.contentEditable = true;
+            wordSpan.focus();
+            wordBox.classList.add('edit-mode');
+
+            const saveButton = document.createElement('button');
+            saveButton.textContent = 'Save';
+            saveButton.className = 'action-button';
+            saveButton.addEventListener('click', () => {
+                wordSpan.contentEditable = false;
+                wordBox.classList.remove('edit-mode');
+                saveButton.remove();
+            });
+
+            wordBox.querySelector('.action-buttons').appendChild(saveButton);
+        }
+
         function splitWordBox(wordBox) {
             const wordSpan = wordBox.querySelector('span');
             const currentText = wordSpan.textContent;
-            const newText = prompt("Enter the corrected words (up to 5) separated by spaces:", currentText);
+            const newText = prompt("Enter the words separated by spaces:", currentText);
             
             if (newText) {
-                const newWords = newText.split(' ').slice(0, 5);
+                const newWords = newText.split(' ');
                 const container = wordBox.parentNode;
                 const index = Array.from(container.children).indexOf(wordBox);
 
