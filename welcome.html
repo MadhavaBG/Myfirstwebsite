@@ -1,4 +1,3 @@
-<!-- Updated with 'Split the shloka' functionality on [current date and time] -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,155 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to PROJECT ANVAYA</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
-        h1, p {
-            color: #333;
-            text-align: center;
-        }
-        select {
-            margin: 10px 0;
-            padding: 5px;
-            width: 200px;
-        }
-        #chapterSelect, #shlokaSelect {
-            display: none;
-        }
-        #shlokaContent {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-            font-size: 18px;
-            line-height: 1.6;
-        }
-        #splitButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #splitButton:hover {
-            background-color: #45a049;
-        }
-        #wordContainer {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 20px;
-        }
+        /* ... (previous styles remain the same) ... */
         .word-box {
             margin: 5px;
             padding: 10px;
             background-color: #f8f8f8;
             border: 1px solid #ddd;
             border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .checkbox-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+        }
+        .action-buttons {
+            display: none;
+            margin-top: 5px;
+        }
+        .action-button {
+            margin: 0 2px;
+            padding: 2px 5px;
+            font-size: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>WELCOME TO PROJECT ANVAYA</h1>
-    <p>What do you want to do?</p>
-    <select id="mainSelect">
-        <option value="">Select an option</option>
-        <option value="bhagavadGita">Bhagavad Gita</option>
-        <option value="indranamuchi">Indranamuchi Samvaada</option>
-        <option value="ramayana">Ramayana</option>
-        <option value="mahabharata">Mahabharata</option>
-        <option value="bhagavata">Bhagavata</option>
-    </select>
-    <select id="chapterSelect">
-        <option value="">Select a chapter</option>
-        <option value="chapter1">Chapter 1 - अध्याय १</option>
-        <!-- Add more chapters as needed -->
-    </select>
-    <select id="shlokaSelect">
-        <option value="">Select a Shloka</option>
-    </select>
-    
-    <div id="shlokaContent"></div>
-    <button id="splitButton" style="display: none;">Split the shloka</button>
-    <div id="wordContainer"></div>
+    <!-- ... (previous HTML remains the same) ... -->
 
     <script>
-        const shlokaCount = {
-            chapter1: 47
-            // Add counts for other chapters as needed
-        };
+        // ... (previous JavaScript remains the same) ...
 
-        document.getElementById('mainSelect').addEventListener('change', function() {
-            var chapterSelect = document.getElementById('chapterSelect');
-            var shlokaSelect = document.getElementById('shlokaSelect');
-            if (this.value === 'bhagavadGita') {
-                chapterSelect.style.display = 'block';
-                shlokaSelect.style.display = 'none';
-            } else {
-                chapterSelect.style.display = 'none';
-                shlokaSelect.style.display = 'none';
-            }
-        });
+        function createWordBox(word) {
+            const wordBox = document.createElement('div');
+            wordBox.className = 'word-box';
+            
+            const wordSpan = document.createElement('span');
+            wordSpan.textContent = word;
+            wordBox.appendChild(wordSpan);
 
-        document.getElementById('chapterSelect').addEventListener('change', function() {
-            var shlokaSelect = document.getElementById('shlokaSelect');
-            shlokaSelect.innerHTML = '<option value="">Select a Shloka</option>';
-            if (this.value !== '') {
-                for (let i = 1; i <= shlokaCount[this.value]; i++) {
-                    let option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = `Shloka ${i}`;
-                    shlokaSelect.appendChild(option);
-                }
-                shlokaSelect.style.display = 'block';
-            } else {
-                shlokaSelect.style.display = 'none';
-            }
-        });
+            const checkboxContainer = document.createElement('div');
+            checkboxContainer.className = 'checkbox-container';
 
-        document.getElementById('shlokaSelect').addEventListener('change', function() {
-            if (this.value !== '') {
-                fetchShloka(document.getElementById('chapterSelect').value, this.value);
-            } else {
-                document.getElementById('shlokaContent').style.display = 'none';
-                document.getElementById('splitButton').style.display = 'none';
-            }
-        });
+            const correctLabel = createCheckboxLabel('Correct');
+            const incorrectLabel = createCheckboxLabel('Incorrect');
 
-        function fetchShloka(chapter, shloka) {
-            fetch('https://madhavabg.github.io/Myfirstwebsite/gita_shlokas.json')
-                .then(response => response.json())
-                .then(data => {
-                    const shlokaText = data[chapter][`shloka${shloka}`];
-                    if (shlokaText) {
-                        displayShloka(shlokaText);
-                        document.getElementById('splitButton').style.display = 'block';
-                    } else {
-                        document.getElementById('shlokaContent').innerHTML = '<p>Shloka not found.</p>';
-                        document.getElementById('shlokaContent').style.display = 'block';
-                        document.getElementById('splitButton').style.display = 'none';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            checkboxContainer.appendChild(correctLabel);
+            checkboxContainer.appendChild(incorrectLabel);
+            wordBox.appendChild(checkboxContainer);
+
+            const actionButtons = document.createElement('div');
+            actionButtons.className = 'action-buttons';
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.className = 'action-button';
+            deleteButton.addEventListener('click', () => deleteWordBox(wordBox));
+
+            const splitButton = document.createElement('button');
+            splitButton.textContent = 'Split';
+            splitButton.className = 'action-button';
+            splitButton.addEventListener('click', () => splitWordBox(wordBox));
+
+            actionButtons.appendChild(deleteButton);
+            actionButtons.appendChild(splitButton);
+            wordBox.appendChild(actionButtons);
+
+            return wordBox;
         }
 
-        function displayShloka(shlokaText) {
-            const shlokaContent = document.getElementById('shlokaContent');
-            shlokaContent.innerHTML = shlokaText.replace(/\n/g, '<br>');
-            shlokaContent.style.display = 'block';
+        function createCheckboxLabel(text) {
+            const label = document.createElement('label');
+            label.className = 'checkbox-label';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.name = text.toLowerCase();
+            checkbox.addEventListener('change', (e) => handleCheckboxChange(e, label.parentNode.parentNode));
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(text));
+            return label;
+        }
+
+        function handleCheckboxChange(event, wordBox) {
+            const isIncorrect = event.target.name === 'incorrect';
+            const otherCheckbox = wordBox.querySelector(`input[name="${isIncorrect ? 'correct' : 'incorrect'}"]`);
+            const actionButtons = wordBox.querySelector('.action-buttons');
+
+            otherCheckbox.checked = false;
+            
+            if (isIncorrect && event.target.checked) {
+                actionButtons.style.display = 'block';
+            } else {
+                actionButtons.style.display = 'none';
+            }
+        }
+
+        function deleteWordBox(wordBox) {
+            wordBox.remove();
+        }
+
+        function splitWordBox(wordBox) {
+            const wordSpan = wordBox.querySelector('span');
+            const currentText = wordSpan.textContent;
+            const newText = prompt("Enter the corrected words (up to 5) separated by spaces:", currentText);
+            
+            if (newText) {
+                const newWords = newText.split(' ').slice(0, 5);
+                const container = wordBox.parentNode;
+                const index = Array.from(container.children).indexOf(wordBox);
+
+                newWords.forEach((word, i) => {
+                    const newBox = createWordBox(word);
+                    container.insertBefore(newBox, container.children[index + i + 1]);
+                });
+
+                wordBox.remove();
+            }
         }
 
         document.getElementById('splitButton').addEventListener('click', function() {
@@ -163,9 +142,7 @@
             const wordContainer = document.getElementById('wordContainer');
             wordContainer.innerHTML = '';
             words.forEach(word => {
-                const wordBox = document.createElement('div');
-                wordBox.className = 'word-box';
-                wordBox.textContent = word;
+                const wordBox = createWordBox(word);
                 wordContainer.appendChild(wordBox);
             });
         });
