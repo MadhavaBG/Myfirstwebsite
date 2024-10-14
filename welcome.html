@@ -26,28 +26,18 @@
         #chapterSelect, #shlokaSelect {
             display: none;
         }
-        .popup {
+        #shlokaContent {
             display: none;
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
+            margin-top: 20px;
             padding: 20px;
+            background-color: white;
             border: 1px solid #ccc;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        .popup-content {
+            border-radius: 5px;
+            max-width: 600px;
+            width: 100%;
             text-align: center;
-        }
-        .close-btn {
-            margin-top: 10px;
-            padding: 5px 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
+            font-size: 18px;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -65,41 +55,18 @@
     <select id="chapterSelect">
         <option value="">Select a chapter</option>
         <option value="chapter1">Chapter 1 - अध्याय १</option>
-        <option value="chapter2">Chapter 2 - अध्याय २</option>
-        <option value="chapter3">Chapter 3 - अध्याय ३</option>
-        <option value="chapter4">Chapter 4 - अध्याय ४</option>
-        <option value="chapter5">Chapter 5 - अध्याय ५</option>
-        <option value="chapter6">Chapter 6 - अध्याय ६</option>
-        <option value="chapter7">Chapter 7 - अध्याय ७</option>
-        <option value="chapter8">Chapter 8 - अध्याय ८</option>
-        <option value="chapter9">Chapter 9 - अध्याय ९</option>
-        <option value="chapter10">Chapter 10 - अध्याय १०</option>
-        <option value="chapter11">Chapter 11 - अध्याय ११</option>
-        <option value="chapter12">Chapter 12 - अध्याय १२</option>
-        <option value="chapter13">Chapter 13 - अध्याय १३</option>
-        <option value="chapter14">Chapter 14 - अध्याय १४</option>
-        <option value="chapter15">Chapter 15 - अध्याय १५</option>
-        <option value="chapter16">Chapter 16 - अध्याय १६</option>
-        <option value="chapter17">Chapter 17 - अध्याय १७</option>
-        <option value="chapter18">Chapter 18 - अध्याय १८</option>
+        <!-- Add more chapters as needed -->
     </select>
     <select id="shlokaSelect">
         <option value="">Select a Shloka</option>
     </select>
-
-    <div id="popup" class="popup">
-        <div class="popup-content">
-            <p>We are not yet ready for that.</p>
-            <button class="close-btn" onclick="closePopup()">Close</button>
-        </div>
-    </div>
+    
+    <div id="shlokaContent"></div>
 
     <script>
         const shlokaCount = {
-            chapter1: 47, chapter2: 72, chapter3: 43, chapter4: 42, chapter5: 29,
-            chapter6: 47, chapter7: 30, chapter8: 28, chapter9: 34, chapter10: 42,
-            chapter11: 55, chapter12: 20, chapter13: 35, chapter14: 27, chapter15: 20,
-            chapter16: 24, chapter17: 28, chapter18: 78
+            chapter1: 47
+            // Add counts for other chapters as needed
         };
 
         document.getElementById('mainSelect').addEventListener('change', function() {
@@ -111,9 +78,6 @@
             } else {
                 chapterSelect.style.display = 'none';
                 shlokaSelect.style.display = 'none';
-                if (this.value !== '') {
-                    document.getElementById('popup').style.display = 'block';
-                }
             }
         });
 
@@ -133,8 +97,33 @@
             }
         });
 
-        function closePopup() {
-            document.getElementById('popup').style.display = 'none';
+        document.getElementById('shlokaSelect').addEventListener('change', function() {
+            if (this.value !== '') {
+                fetchShloka(document.getElementById('chapterSelect').value, this.value);
+            } else {
+                document.getElementById('shlokaContent').style.display = 'none';
+            }
+        });
+
+        function fetchShloka(chapter, shloka) {
+            fetch('gita_shlokas.json')
+                .then(response => response.json())
+                .then(data => {
+                    const shlokaText = data[chapter][`shloka${shloka}`];
+                    if (shlokaText) {
+                        displayShloka(shlokaText);
+                    } else {
+                        document.getElementById('shlokaContent').innerHTML = '<p>Shloka not found.</p>';
+                        document.getElementById('shlokaContent').style.display = 'block';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayShloka(shlokaText) {
+            const shlokaContent = document.getElementById('shlokaContent');
+            shlokaContent.innerHTML = shlokaText.replace(/\n/g, '<br>');
+            shlokaContent.style.display = 'block';
         }
     </script>
 </body>
