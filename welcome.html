@@ -5,7 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to PROJECT ANVAYA</title>
     <style>
-        /* ... (previous styles remain the same) ... */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1, p {
+            color: #333;
+            text-align: center;
+        }
+        select {
+            margin: 10px 0;
+            padding: 5px;
+            width: 200px;
+        }
+        #chapterSelect, #shlokaSelect {
+            display: none;
+        }
+        #shlokaContent {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        #splitButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #splitButton:hover {
+            background-color: #45a049;
+        }
+        #wordContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
         .word-box {
             margin: 5px;
             padding: 10px;
@@ -44,10 +95,94 @@
     </style>
 </head>
 <body>
-    <!-- ... (previous HTML remains the same) ... -->
+    <h1>WELCOME TO PROJECT ANVAYA</h1>
+    <p>What do you want to do?</p>
+    <select id="mainSelect">
+        <option value="">Select an option</option>
+        <option value="bhagavadGita">Bhagavad Gita</option>
+        <option value="indranamuchi">Indranamuchi Samvaada</option>
+        <option value="ramayana">Ramayana</option>
+        <option value="mahabharata">Mahabharata</option>
+        <option value="bhagavata">Bhagavata</option>
+    </select>
+    <select id="chapterSelect">
+        <option value="">Select a chapter</option>
+        <option value="chapter1">Chapter 1 - अध्याय १</option>
+        <!-- Add more chapters as needed -->
+    </select>
+    <select id="shlokaSelect">
+        <option value="">Select a Shloka</option>
+    </select>
+    
+    <div id="shlokaContent"></div>
+    <button id="splitButton" style="display: none;">Split the shloka</button>
+    <div id="wordContainer"></div>
 
     <script>
-        // ... (previous JavaScript remains the same) ...
+        const shlokaCount = {
+            chapter1: 47
+            // Add counts for other chapters as needed
+        };
+
+        document.getElementById('mainSelect').addEventListener('change', function() {
+            var chapterSelect = document.getElementById('chapterSelect');
+            var shlokaSelect = document.getElementById('shlokaSelect');
+            if (this.value === 'bhagavadGita') {
+                chapterSelect.style.display = 'block';
+                shlokaSelect.style.display = 'none';
+            } else {
+                chapterSelect.style.display = 'none';
+                shlokaSelect.style.display = 'none';
+            }
+        });
+
+        document.getElementById('chapterSelect').addEventListener('change', function() {
+            var shlokaSelect = document.getElementById('shlokaSelect');
+            shlokaSelect.innerHTML = '<option value="">Select a Shloka</option>';
+            if (this.value !== '') {
+                for (let i = 1; i <= shlokaCount[this.value]; i++) {
+                    let option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `Shloka ${i}`;
+                    shlokaSelect.appendChild(option);
+                }
+                shlokaSelect.style.display = 'block';
+            } else {
+                shlokaSelect.style.display = 'none';
+            }
+        });
+
+        document.getElementById('shlokaSelect').addEventListener('change', function() {
+            if (this.value !== '') {
+                fetchShloka(document.getElementById('chapterSelect').value, this.value);
+            } else {
+                document.getElementById('shlokaContent').style.display = 'none';
+                document.getElementById('splitButton').style.display = 'none';
+            }
+        });
+
+        function fetchShloka(chapter, shloka) {
+            fetch('https://madhavabg.github.io/Myfirstwebsite/gita_shlokas.json')
+                .then(response => response.json())
+                .then(data => {
+                    const shlokaText = data[chapter][`shloka${shloka}`];
+                    if (shlokaText) {
+                        displayShloka(shlokaText);
+                        document.getElementById('splitButton').style.display = 'block';
+                    } else {
+                        document.getElementById('shlokaContent').innerHTML = '<p>Shloka not found.</p>';
+                        document.getElementById('shlokaContent').style.display = 'block';
+                        document.getElementById('splitButton').style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayShloka(shlokaText) {
+            const shlokaContent = document.getElementById('shlokaContent');
+            shlokaContent.innerHTML = shlokaText.replace(/\n/g, '<br>');
+            shlokaContent.style.display = 'block';
+        }
 
         function createWordBox(word) {
             const wordBox = document.createElement('div');
