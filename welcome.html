@@ -9,21 +9,21 @@
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 20px;
             background-color: #f0f0f0;
         }
         h1, p {
             color: #333;
+            text-align: center;
         }
         select {
             margin: 10px 0;
             padding: 5px;
             width: 200px;
         }
-        #chapterSelect {
+        #chapterSelect, #shlokaSelect {
             display: none;
         }
         .popup {
@@ -83,6 +83,9 @@
         <option value="chapter17">Chapter 17 - अध्याय १७</option>
         <option value="chapter18">Chapter 18 - अध्याय १८</option>
     </select>
+    <select id="shlokaSelect">
+        <option value="">Select a Shloka</option>
+    </select>
 
     <div id="popup" class="popup">
         <div class="popup-content">
@@ -92,15 +95,41 @@
     </div>
 
     <script>
+        const shlokaCount = {
+            chapter1: 47, chapter2: 72, chapter3: 43, chapter4: 42, chapter5: 29,
+            chapter6: 47, chapter7: 30, chapter8: 28, chapter9: 34, chapter10: 42,
+            chapter11: 55, chapter12: 20, chapter13: 35, chapter14: 27, chapter15: 20,
+            chapter16: 24, chapter17: 28, chapter18: 78
+        };
+
         document.getElementById('mainSelect').addEventListener('change', function() {
             var chapterSelect = document.getElementById('chapterSelect');
+            var shlokaSelect = document.getElementById('shlokaSelect');
             if (this.value === 'bhagavadGita') {
                 chapterSelect.style.display = 'block';
+                shlokaSelect.style.display = 'none';
             } else {
                 chapterSelect.style.display = 'none';
+                shlokaSelect.style.display = 'none';
                 if (this.value !== '') {
                     document.getElementById('popup').style.display = 'block';
                 }
+            }
+        });
+
+        document.getElementById('chapterSelect').addEventListener('change', function() {
+            var shlokaSelect = document.getElementById('shlokaSelect');
+            shlokaSelect.innerHTML = '<option value="">Select a Shloka</option>';
+            if (this.value !== '') {
+                for (let i = 1; i <= shlokaCount[this.value]; i++) {
+                    let option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `Shloka ${i}`;
+                    shlokaSelect.appendChild(option);
+                }
+                shlokaSelect.style.display = 'block';
+            } else {
+                shlokaSelect.style.display = 'none';
             }
         });
 
