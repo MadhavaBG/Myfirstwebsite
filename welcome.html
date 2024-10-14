@@ -106,7 +106,7 @@
         });
 
         function fetchShloka(chapter, shloka) {
-            fetch('gita_shlokas.json')
+            fetch('https://madhavabg.github.io/Myfirstwebsite/gita_shlokas.json')
                 .then(response => response.json())
                 .then(data => {
                     const shlokaText = data[chapter][`shloka${shloka}`];
