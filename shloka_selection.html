@@ -22,13 +22,21 @@
         h1, h2 {
             color: #333;
         }
-        select {
+        select, button {
             width: 100%;
             padding: 10px;
             margin-top: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             background-color: white;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
         #message {
             margin-top: 20px;
@@ -66,6 +74,7 @@
             <select id="shloka-select"></select>
         </div>
         <div id="message"></div>
+        <button id="next-button" style="display: none;">Next</button>
     </div>
 
     <script>
@@ -82,6 +91,7 @@
                 document.getElementById('chapter-selection').style.display = 'none';
                 document.getElementById('shloka-selection').style.display = 'none';
                 document.getElementById('message').textContent = '';
+                document.getElementById('next-button').style.display = 'none';
             } else {
                 textSelection.style.display = 'none';
             }
@@ -94,10 +104,12 @@
                 chapterSelection.style.display = 'block';
                 message.textContent = '';
                 populateChapters();
+                document.getElementById('next-button').style.display = 'none';
             } else {
                 chapterSelection.style.display = 'none';
                 document.getElementById('shloka-selection').style.display = 'none';
                 message.textContent = 'We are not yet ready for this text.';
+                document.getElementById('next-button').style.display = 'none';
             }
         });
 
@@ -106,9 +118,23 @@
             if (this.value) {
                 shlokaSelection.style.display = 'block';
                 populateShlokas(this.value);
+                document.getElementById('next-button').style.display = 'none';
             } else {
                 shlokaSelection.style.display = 'none';
+                document.getElementById('next-button').style.display = 'none';
             }
+        });
+
+        document.getElementById('shloka-select').addEventListener('change', function() {
+            if (this.value) {
+                document.getElementById('next-button').style.display = 'block';
+            } else {
+                document.getElementById('next-button').style.display = 'none';
+            }
+        });
+
+        document.getElementById('next-button').addEventListener('click', function() {
+            window.location.href = 'pada_chheda.html';
         });
 
         function populateChapters() {
