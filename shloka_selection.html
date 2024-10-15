@@ -30,6 +30,11 @@
             border-radius: 4px;
             background-color: white;
         }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #007bff;
+        }
     </style>
 </head>
 <body>
@@ -52,17 +57,81 @@
                 <option value="yoga-pradeepika">Yoga Pradeepika</option>
             </select>
         </div>
+        <div id="chapter-selection" style="display: none;">
+            <h2>Select Chapter</h2>
+            <select id="chapter-select"></select>
+        </div>
+        <div id="shloka-selection" style="display: none;">
+            <h2>Select Shloka</h2>
+            <select id="shloka-select"></select>
+        </div>
+        <div id="message"></div>
     </div>
 
     <script>
+        const chapters = {
+            1: 47, 2: 72, 3: 43, 4: 42, 5: 29, 6: 47,
+            7: 30, 8: 28, 9: 34, 10: 42, 11: 55, 12: 20,
+            13: 35, 14: 27, 15: 20, 16: 24, 17: 28, 18: 78
+        };
+
         document.getElementById('action-select').addEventListener('change', function() {
             var textSelection = document.getElementById('text-selection');
             if (this.value === 'select-text') {
                 textSelection.style.display = 'block';
+                document.getElementById('chapter-selection').style.display = 'none';
+                document.getElementById('shloka-selection').style.display = 'none';
+                document.getElementById('message').textContent = '';
             } else {
                 textSelection.style.display = 'none';
             }
         });
+
+        document.getElementById('text-select').addEventListener('change', function() {
+            var chapterSelection = document.getElementById('chapter-selection');
+            var message = document.getElementById('message');
+            if (this.value === 'bhagavad-gita') {
+                chapterSelection.style.display = 'block';
+                message.textContent = '';
+                populateChapters();
+            } else {
+                chapterSelection.style.display = 'none';
+                document.getElementById('shloka-selection').style.display = 'none';
+                message.textContent = 'We are not yet ready for this text.';
+            }
+        });
+
+        document.getElementById('chapter-select').addEventListener('change', function() {
+            var shlokaSelection = document.getElementById('shloka-selection');
+            if (this.value) {
+                shlokaSelection.style.display = 'block';
+                populateShlokas(this.value);
+            } else {
+                shlokaSelection.style.display = 'none';
+            }
+        });
+
+        function populateChapters() {
+            var select = document.getElementById('chapter-select');
+            select.innerHTML = '<option value="">Select a chapter</option>';
+            for (let i = 1; i <= 18; i++) {
+                let option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Chapter ${i}`;
+                select.appendChild(option);
+            }
+        }
+
+        function populateShlokas(chapter) {
+            var select = document.getElementById('shloka-select');
+            select.innerHTML = '<option value="">Select a shloka</option>';
+            for (let i = 1; i <= chapters[chapter]; i++) {
+                let option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Shloka ${i}`;
+                select.appendChild(option);
+            }
+        }
     </script>
 </body>
 </html>
