@@ -3,33 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Anvaya - Login</title>
-    <link rel="stylesheet" href="anvaya_common.css">
+    <title>Project Anvaya - User Management</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 20px;
             background-color: #f0f0f0;
         }
-        .login-container {
+        h1, h2 {
+            color: #333;
+        }
+        .container {
             background-color: white;
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
+            margin-bottom: 20px;
         }
         form {
             display: flex;
             flex-direction: column;
         }
-        input {
+        input, select {
             margin: 10px 0;
             padding: 10px;
             border: 1px solid #ddd;
@@ -42,15 +38,21 @@
             padding: 10px;
             border-radius: 4px;
             cursor: pointer;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #0056b3;
         }
+        #userManagement {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>WELCOME TO PROJECT ANVAYA</h1>
+    <h1>WELCOME TO PROJECT ANVAYA</h1>
+    
+    <div id="loginContainer" class="container">
+        <h2>Login</h2>
         <form id="loginForm">
             <input type="text" id="username" placeholder="Username" required>
             <input type="password" id="password" placeholder="Password" required>
@@ -58,18 +60,54 @@
         </form>
     </div>
 
+    <div id="userManagement" class="container">
+        <h2>User Management</h2>
+        <form id="createUserForm">
+            <input type="email" id="newEmail" placeholder="Email" required>
+            <input type="tel" id="newMobile" placeholder="Mobile Number" required>
+            <select id="userType" required>
+                <option value="">Select User Type</option>
+                <option value="viewer">Viewer</option>
+                <option value="creator">Creator</option>
+                <option value="editor">Editor</option>
+            </select>
+            <button type="submit">Create User</button>
+        </form>
+    </div>
+
     <script>
+        // Simulated user database
+        const users = [
+            { username: 'madhava', password: '123', type: 'superuser' }
+        ];
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-            if (username === 'madhava' && password === '123') {
-                alert('Login successful! Welcome, Super User.');
-                // Here you would typically redirect to a dashboard or home page
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                alert(`Login successful! Welcome, ${user.type}.`);
+                if (user.type === 'superuser') {
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('userManagement').style.display = 'block';
+                }
             } else {
                 alert('Invalid username or password. Please try again.');
             }
+        });
+
+        document.getElementById('createUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('newEmail').value;
+            const mobile = document.getElementById('newMobile').value;
+            const type = document.getElementById('userType').value;
+
+            users.push({ username: email, password: mobile, type: type });
+            alert(`New ${type} created with email: ${email}`);
+            this.reset();
         });
     </script>
 </body>
