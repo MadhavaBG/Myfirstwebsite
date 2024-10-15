@@ -16,17 +16,53 @@
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
         }
-        h1 {
+        h1, h2 {
             color: #333;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Shloka Selection</h1>
-        <p>Welcome to the Shloka Selection page. Here you can select and view various shlokas.</p>
-        <!-- Add more content for shloka selection here -->
+        <h2>What do you want to do?</h2>
+        <select id="action-select">
+            <option value="">Select an action</option>
+            <option value="select-text">Select Text</option>
+        </select>
+        <div id="text-selection" style="display: none;">
+            <h2>Select Text</h2>
+            <select id="text-select">
+                <option value="">Select a text</option>
+                <option value="bhagavad-gita">Bhagavad Gita</option>
+                <option value="ramayana">Ramayana</option>
+                <option value="indranamuchi-samvada">Indranamuchi Samvada</option>
+                <option value="mahabharata">Mahabharata</option>
+                <option value="hatha-yoga-pradeepika">Hatha Yoga Pradeepika</option>
+                <option value="yoga-pradeepika">Yoga Pradeepika</option>
+            </select>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('action-select').addEventListener('change', function() {
+            var textSelection = document.getElementById('text-selection');
+            if (this.value === 'select-text') {
+                textSelection.style.display = 'block';
+            } else {
+                textSelection.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
